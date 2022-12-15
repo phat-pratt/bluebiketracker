@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import Table from 'react-bootstrap/Table';
 import './App.css';
+import GeoBikes from './components/geoBikes';
 
 const JAMES_STATIONS = [47, 415, 345];
 
 function App() {
   const [stations, setStations] = useState(null);
+  const [myStations, setMyStations] = useState(null);
   
   useEffect(() => {
     fetch('https://layer.bicyclesharing.net/map/v1/bos/map-inventory').then((response) => {
@@ -21,18 +23,28 @@ function App() {
           return Promise.reject(json);
       }
 
+      const stationData = (json?.features ?? []).map(feature => {
+        return {
+          geolocation: feature.geometry,
+          ...(feature?.properties?.station ?? {})
+        }
+      })
+      
+      setStations(stationData);
+      console.log(stationData)
       const stations = json?.features?.filter((feature) => {
         const station = feature?.properties?.station;
         return !!station && JAMES_STATIONS.includes(parseInt(station.id))
       })?.map(feature => feature.properties.station);
       
-      setStations(stations ?? []);
+      setMyStations(stations ?? []);
     })
   }, [])
 
 
   return (
     <div className="App">
+      <h1 style={{color: 'white'}}>My Stations</h1>
       <Table striped bordered hover variant="dark">
         <thead>
           <tr>
@@ -43,7 +55,7 @@ function App() {
           </tr>
         </thead>
         <tbody>
-          {stations?.map((station) => {
+          {myStations?.map((station) => {
             const { id, name, bikes_available, docks_available, last_reported } = station ?? {}
 
             const lastUpdate = new Date(last_reported * 1000).toLocaleDateString("en-US");
@@ -58,6 +70,7 @@ function App() {
           })}
         </tbody>
       </Table>
+      <GeoBikes stationData={stations} />
     </div>
   );
 }
