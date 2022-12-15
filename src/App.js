@@ -26,7 +26,6 @@ function App() {
         return !!station && JAMES_STATIONS.includes(parseInt(station.id))
       })?.map(feature => feature.properties.station);
       
-      console.log('stations', stations)
       setStations(stations ?? []);
     })
   }, [])
