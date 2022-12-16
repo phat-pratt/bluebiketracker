@@ -31,7 +31,6 @@ function App() {
       })
       
       setStations(stationData);
-      console.log(stationData)
       const stations = json?.features?.filter((feature) => {
         const station = feature?.properties?.station;
         return !!station && JAMES_STATIONS.includes(parseInt(station.id))

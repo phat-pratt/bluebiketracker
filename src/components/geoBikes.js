@@ -27,18 +27,18 @@ const GeoBikes = (props) => {
     const [geolocation, setGeolocation] = useState(null);
 
     useEffect(() => {
-        if(navigator?.geolocation) {
+        console.log('run')
+        if(navigator?.geolocation && !geolocation) {
             navigator.geolocation.getCurrentPosition((location) => {
                 if (location) {
                     setGeolocation(location.coords)
                 }
             });
         }
-    },[])
+    },[navigator.geolocation])
 
     useEffect(() => {
         if(geolocation) {
-            
             const userLat = geolocation?.latitude;
             const userLong = geolocation?.longitude;
 
