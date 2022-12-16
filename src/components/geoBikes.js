@@ -1,6 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
+import Spinner from 'react-bootstrap/Spinner';
+
+const MAP_LINK = 'http://maps.apple.com/?ll=';
 
 function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
     var R = 6371; // Radius of the earth in km
@@ -26,22 +29,46 @@ const GeoBikes = (props) => {
     const [numStations, setNumStations] = useState(5);
     const [geolocation, setGeolocation] = useState(null);
 
+    const onGetCurrentLocation =  () => {
+        const options = {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
+        };
+        navigator.geolocation.getCurrentPosition( function (position) {
+            //use coordinates
+            const marker = { 
+              lat: position.coords.latitude, 
+              lng: position.coords.longitude 
+            };
+            setGeolocation(marker)
+        }, function (error) {
+            setGeolocation('error')
+        }, options)
+    }
+
     useEffect(() => {
-        console.log('run')
-        if(navigator?.geolocation && !geolocation) {
-            navigator.geolocation.getCurrentPosition((location) => {
-                if (location) {
-                    setGeolocation(location.coords)
+        if ( navigator.permissions && navigator.permissions.query) {
+            //try permissions APIs first
+            navigator.permissions.query({ name: 'geolocation' }).then(function(result) {
+                // Will return ['granted', 'prompt', 'denied']
+                const permission = result.state;
+                if ( permission === 'granted' || permission === 'prompt' ) {
+                    onGetCurrentLocation();
                 }
             });
+        } else if (navigator.geolocation) {
+            //then Navigation APIs
+            onGetCurrentLocation();
         }
-    },[navigator.geolocation])
+
+    }, []);
+
 
     useEffect(() => {
-        if(geolocation) {
-            const userLat = geolocation?.latitude;
-            const userLong = geolocation?.longitude;
-
+            const userLat = geolocation?.lat;
+            const userLong = geolocation?.lng;
+        if(userLat && userLong) {
             const distances = stationData?.map(station => {
                 const stationLat = station?.geolocation?.coordinates?.[1]
                 const stationLong = station?.geolocation?.coordinates?.[0]
@@ -51,14 +78,24 @@ const GeoBikes = (props) => {
                     dist
                 }
             }).sort((a,b) => a.dist - b.dist)
+
             setSortedStations(distances)
         }
 
-    }, [geolocation])
-    
+    }, [geolocation, stationData])
+
     const renderStations = useCallback(() => {
-        if(!geolocation || !sortedStations) {
-            return null;
+        if(geolocation === 'error') {
+           return <p style={{ color: 'white'}}>Could not fetch location</p>;
+        } else if(!geolocation || !sortedStations) {
+            return (
+                <div>
+                    {/* <p>{geolocation}</p> */}
+                <Spinner animation="border" role="status" variant="light">
+                  <span className="visually-hidden">Loading...</span>
+                </Spinner>
+                </div>
+            );
         }
 
         return (
@@ -74,15 +111,18 @@ const GeoBikes = (props) => {
                 </thead>
                 <tbody>
                 {sortedStations?.slice(0, numStations)?.map((station) => {
-                    const { id, name, bikes_available, docks_available, dist } = station ?? {}
-
+                    const { id, name, bikes_available, docks_available, dist, geolocation } = station ?? {}
+                    const stationLat = geolocation?.coordinates?.[1]
+                    const stationLong = geolocation?.coordinates?.[0]
+                    const link = `${MAP_LINK}${stationLat},${stationLong}`
+                    
                     return (
-                    <tr key={id}>
-                        <td>{ name }</td>
-                        <td>{ bikes_available }</td>
-                        <td>{ docks_available }</td>
-                        <td>{ `${dist.toFixed(2) } Km`}</td>
-                    </tr>
+                        <tr key={id}>
+                            <td><a href={link}>{ name }</a></td>
+                            <td>{ bikes_available }</td>
+                            <td>{ docks_available }</td>
+                            <td>{ `${dist.toFixed(2) } Km`}</td>
+                        </tr>
                     );
                 })}
                 </tbody>
@@ -90,7 +130,7 @@ const GeoBikes = (props) => {
             <Button onClick={() => setNumStations(numStations + 5)} variant="primary">Load More</Button>
             </div>
         )
-    }, [sortedStations, numStations, geolocation])
+    }, [sortedStations, numStations, geolocation, stationData])
 
     return (
         <div>
