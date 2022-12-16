@@ -111,7 +111,7 @@ const GeoBikes = (props) => {
                     const { id, name, bikes_available, docks_available, dist, geolocation } = station ?? {}
                     const stationLat = geolocation?.coordinates?.[1]
                     const stationLong = geolocation?.coordinates?.[0]
-                    const link = `${MAP_LINK}${stationLat},${stationLong}`
+                    const link = `${MAP_LINK}${stationLat},${stationLong}&q=${name}`
                     
                     return (
                         <tr key={id}>
@@ -127,7 +127,7 @@ const GeoBikes = (props) => {
             <Button onClick={() => setNumStations(numStations + 5)} variant="primary">Load More</Button>
             </div>
         )
-    }, [sortedStations, numStations, geolocation, stationData])
+    }, [sortedStations, numStations, geolocation])
 
     return (
         <div>
