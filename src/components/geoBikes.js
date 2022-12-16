@@ -66,8 +66,8 @@ const GeoBikes = (props) => {
 
 
     useEffect(() => {
-            const userLat = geolocation?.lat;
-            const userLong = geolocation?.lng;
+        const userLat = geolocation?.lat;
+        const userLong = geolocation?.lng;
         if(userLat && userLong) {
             const distances = stationData?.map(station => {
                 const stationLat = station?.geolocation?.coordinates?.[1]
@@ -89,12 +89,9 @@ const GeoBikes = (props) => {
            return <p style={{ color: 'white'}}>Could not fetch location</p>;
         } else if(!geolocation || !sortedStations) {
             return (
-                <div>
-                    {/* <p>{geolocation}</p> */}
                 <Spinner animation="border" role="status" variant="light">
                   <span className="visually-hidden">Loading...</span>
                 </Spinner>
-                </div>
             );
         }
 
