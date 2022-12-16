@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/bluebiketracker/static/css/main.60ad370d.css",
-    "main.js": "/bluebiketracker/static/js/main.6bf1d5c1.js",
+    "main.js": "/bluebiketracker/static/js/main.e64fcddb.js",
     "static/js/787.099ba18f.chunk.js": "/bluebiketracker/static/js/787.099ba18f.chunk.js",
     "index.html": "/bluebiketracker/index.html",
     "main.60ad370d.css.map": "/bluebiketracker/static/css/main.60ad370d.css.map",
-    "main.6bf1d5c1.js.map": "/bluebiketracker/static/js/main.6bf1d5c1.js.map",
+    "main.e64fcddb.js.map": "/bluebiketracker/static/js/main.e64fcddb.js.map",
     "787.099ba18f.chunk.js.map": "/bluebiketracker/static/js/787.099ba18f.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.60ad370d.css",
-    "static/js/main.6bf1d5c1.js"
+    "static/js/main.e64fcddb.js"
   ]
 }
