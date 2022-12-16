@@ -90,48 +90,48 @@ const GeoBikes = (props) => {
         } else if(!geolocation || !sortedStations) {
             return (
                 <Spinner animation="border" role="status" variant="light">
-                  <span className="visually-hidden">Loading...</span>
+                    <span className="visually-hidden">Loading...</span>
                 </Spinner>
             );
         }
 
         return (
             <div style={{backgroundColor: '#282A3A'}}>
-            <Table striped bordered hover variant="dark">
-                <thead>
-                <tr>
-                    <th>Location</th>
-                    <th>Bikes</th>
-                    <th>Docks</th>
-                    <th>Distance</th>
-                </tr>
-                </thead>
-                <tbody>
-                {sortedStations?.slice(0, numStations)?.map((station) => {
-                    const { id, name, bikes_available, docks_available, dist, geolocation } = station ?? {}
-                    const stationLat = geolocation?.coordinates?.[1]
-                    const stationLong = geolocation?.coordinates?.[0]
-                    const link = `${MAP_LINK}${stationLat},${stationLong}&q=${name}`
-                    
-                    return (
-                        <tr key={id}>
-                            <td><a href={link}>{ name }</a></td>
-                            <td>{ bikes_available }</td>
-                            <td>{ docks_available }</td>
-                            <td>{ `${dist.toFixed(2) } Km`}</td>
-                        </tr>
-                    );
-                })}
-                </tbody>
-            </Table>
-            <Button onClick={() => setNumStations(numStations + 5)} variant="primary">Load More</Button>
+                <Table striped bordered hover variant="dark">
+                    <thead>
+                    <tr>
+                        <th>Location</th>
+                        <th>Bikes</th>
+                        <th>Docks</th>
+                        <th>Distance</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {sortedStations?.slice(0, numStations)?.map((station) => {
+                        const { id, name, bikes_available, docks_available, dist, geolocation } = station ?? {}
+                        const stationLat = geolocation?.coordinates?.[1]
+                        const stationLong = geolocation?.coordinates?.[0]
+                        const link = `${MAP_LINK}${stationLat},${stationLong}&q=${name}`
+                        
+                        return (
+                            <tr key={id}>
+                                <td><a href={link}>{ name }</a></td>
+                                <td>{ bikes_available }</td>
+                                <td>{ docks_available }</td>
+                                <td>{ `${dist.toFixed(2) } Km`}</td>
+                            </tr>
+                        );
+                    })}
+                    </tbody>
+                </Table>
+                <Button onClick={() => setNumStations(numStations + 5)} variant="primary">Load More</Button>
             </div>
         )
     }, [sortedStations, numStations, geolocation])
 
     return (
         <div>
-            <h1 style={{color: 'white'}}>Closest Stations</h1>
+            <h1 style={{color: 'white', padding: 20 }}>Closest Stations</h1>
             {renderStations()}
       </div>
 

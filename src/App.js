@@ -43,7 +43,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1 style={{color: 'white'}}>My Stations</h1>
+      <h1 style={{color: 'white', padding: 20 }}>My Stations</h1>
       <Table striped bordered hover variant="dark">
         <thead>
           <tr>
